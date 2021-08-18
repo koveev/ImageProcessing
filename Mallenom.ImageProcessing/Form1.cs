@@ -60,7 +60,7 @@ namespace Mallenom.ImageProcessing
                 lock (_locker)
                 {
                     Bitmap bitmap = new Bitmap(newBitmap.Width, newBitmap.Height);
-                    Graphics graphics = Graphics.FromImage(newBitmap);
+                    Graphics graphics = Graphics.FromImage(bitmap);
                     ImageAttributes imageAttributes = new ImageAttributes();
                     ColorMatrix colorMatrix = new ColorMatrix(new float[][]{
                                         new float[] { _contrast, 0f, 0f, 0f, 0f },
@@ -82,7 +82,7 @@ namespace Mallenom.ImageProcessing
                         GraphicsUnit.Pixel,
                         imageAttributes);
 
-                    processedImage.Image = newBitmap;
+                    processedImage.Image = bitmap;
 
                     graphics.Dispose();
                     imageAttributes.Dispose();
