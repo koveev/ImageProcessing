@@ -30,26 +30,28 @@ namespace Mallenom.ImageProcessing
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.newImage = new System.Windows.Forms.PictureBox();
+            this._mnuMenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this._miSaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contrastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gradientToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.trackBarContast = new System.Windows.Forms.TrackBar();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.trackBarContrast = new System.Windows.Forms.TrackBar();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.processedImage = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarContast)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.newImage)).BeginInit();
+            this._mnuMenuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarContrast)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.processedImage)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -64,55 +66,63 @@ namespace Mallenom.ImageProcessing
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.pictureBox1);
-            this.splitContainer1.Panel1.Controls.Add(this.menuStrip1);
+            this.splitContainer1.Panel1.Controls.Add(this.processedImage);
+            this.splitContainer1.Panel1.Controls.Add(this.newImage);
+            this.splitContainer1.Panel1.Controls.Add(this._mnuMenuStrip);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.label2);
             this.splitContainer1.Panel2.Controls.Add(this.label1);
-            this.splitContainer1.Panel2.Controls.Add(this.trackBarContast);
+            this.splitContainer1.Panel2.Controls.Add(this.trackBarContrast);
             this.splitContainer1.Panel2.Cursor = System.Windows.Forms.Cursors.Default;
             this.splitContainer1.Size = new System.Drawing.Size(603, 434);
             this.splitContainer1.SplitterDistance = 330;
             this.splitContainer1.TabIndex = 0;
             // 
-            // pictureBox1
+            // newImage
             // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 24);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(601, 304);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.newImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.newImage.Location = new System.Drawing.Point(0, 24);
+            this.newImage.Name = "newImage";
+            this.newImage.Size = new System.Drawing.Size(601, 304);
+            this.newImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.newImage.TabIndex = 0;
+            this.newImage.TabStop = false;
             // 
-            // menuStrip1
+            // menuStrip
             // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._mnuMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.actionsToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(601, 24);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
+            this._mnuMenuStrip.Location = new System.Drawing.Point(0, 0);
+            this._mnuMenuStrip.Name = "menuStrip";
+            this._mnuMenuStrip.Size = new System.Drawing.Size(601, 24);
+            this._mnuMenuStrip.TabIndex = 1;
+            this._mnuMenuStrip.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem,
-            this.saveAsToolStripMenuItem});
+            this.openMenuItem,
+            this._miSaveAsMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
-            // openToolStripMenuItem
+            // openMenuItem
             // 
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            this.openMenuItem.Name = "openMenuItem";
+            this.openMenuItem.Size = new System.Drawing.Size(112, 22);
+            this.openMenuItem.Text = "Open";
+            this.openMenuItem.Click += new System.EventHandler(this.OpenMenuItemClick);
+            // 
+            // saveAsMenuItem
+            // 
+            this._miSaveAsMenuItem.Name = "saveAsMenuItem";
+            this._miSaveAsMenuItem.Size = new System.Drawing.Size(112, 22);
+            this._miSaveAsMenuItem.Text = "Save as";
+            this._miSaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItemClick);
             // 
             // actionsToolStripMenuItem
             // 
@@ -128,14 +138,14 @@ namespace Mallenom.ImageProcessing
             this.contrastToolStripMenuItem.Name = "contrastToolStripMenuItem";
             this.contrastToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.contrastToolStripMenuItem.Text = "Contrast";
-            this.contrastToolStripMenuItem.Click += new System.EventHandler(this.contrastToolStripMenuItem_Click);
+            this.contrastToolStripMenuItem.Click += new System.EventHandler(this.ContrastMenuItemClick);
             // 
             // gradientToolStripMenuItem
             // 
             this.gradientToolStripMenuItem.Name = "gradientToolStripMenuItem";
             this.gradientToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.gradientToolStripMenuItem.Text = "Gradient";
-            this.gradientToolStripMenuItem.Click += new System.EventHandler(this.gradientToolStripMenuItem_Click);
+            this.gradientToolStripMenuItem.Click += new System.EventHandler(this.GradientMenuItemClick);
             // 
             // label2
             // 
@@ -155,34 +165,37 @@ namespace Mallenom.ImageProcessing
             this.label1.TabIndex = 2;
             this.label1.Text = "Contast";
             // 
-            // trackBarContast
+            // trackBarContrast
             // 
-            this.trackBarContast.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.trackBarContrast.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBarContast.AutoSize = false;
-            this.trackBarContast.BackColor = System.Drawing.SystemColors.Control;
-            this.trackBarContast.Location = new System.Drawing.Point(104, 38);
-            this.trackBarContast.Maximum = 50;
-            this.trackBarContast.Name = "trackBarContast";
-            this.trackBarContast.Size = new System.Drawing.Size(464, 24);
-            this.trackBarContast.TabIndex = 1;
-            this.trackBarContast.TickFrequency = 5;
-            this.trackBarContast.Scroll += new System.EventHandler(this.trackBarContast_Scroll);
+            this.trackBarContrast.AutoSize = false;
+            this.trackBarContrast.BackColor = System.Drawing.SystemColors.Control;
+            this.trackBarContrast.Location = new System.Drawing.Point(104, 38);
+            this.trackBarContrast.Maximum = 50;
+            this.trackBarContrast.Name = "trackBarContrast";
+            this.trackBarContrast.Size = new System.Drawing.Size(464, 24);
+            this.trackBarContrast.TabIndex = 1;
+            this.trackBarContrast.TickFrequency = 5;
+            this.trackBarContrast.Scroll += new System.EventHandler(this.TrackBarContrastScroll);
             // 
-            // openFileDialog1
+            // openFileDialog
             // 
-            this.openFileDialog1.Filter = "Image | *.bmp;*.png;*.jpg";
+            this.openFileDialog.Filter = "Image | *.bmp;*.png;*.jpg";
             // 
-            // saveFileDialog1
+            // saveFileDialog
             // 
-            this.saveFileDialog1.Filter = "Jpeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
+            this.saveFileDialog.Filter = "Jpeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
             // 
-            // saveAsToolStripMenuItem
+            // processedImage
             // 
-            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.saveAsToolStripMenuItem.Text = "Save as";
-            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+            this.processedImage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.processedImage.Location = new System.Drawing.Point(0, 24);
+            this.processedImage.Name = "processedImage";
+            this.processedImage.Size = new System.Drawing.Size(601, 304);
+            this.processedImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.processedImage.TabIndex = 3;
+            this.processedImage.TabStop = false;
             // 
             // Form1
             // 
@@ -190,7 +203,7 @@ namespace Mallenom.ImageProcessing
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(603, 434);
             this.Controls.Add(this.splitContainer1);
-            this.MainMenuStrip = this.menuStrip1;
+            this.MainMenuStrip = this._mnuMenuStrip;
             this.Name = "Form1";
             this.Text = "Image Processing";
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -199,10 +212,11 @@ namespace Mallenom.ImageProcessing
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarContast)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.newImage)).EndInit();
+            this._mnuMenuStrip.ResumeLayout(false);
+            this._mnuMenuStrip.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarContrast)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.processedImage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -210,19 +224,20 @@ namespace Mallenom.ImageProcessing
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.TrackBar trackBarContast;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.PictureBox newImage;
+        private System.Windows.Forms.TrackBar trackBarContrast;
+        private System.Windows.Forms.MenuStrip _mnuMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.ToolStripMenuItem openMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem actionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem contrastToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gradientToolStripMenuItem;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem _miSaveAsMenuItem;
+        private System.Windows.Forms.PictureBox processedImage;
     }
 }
 

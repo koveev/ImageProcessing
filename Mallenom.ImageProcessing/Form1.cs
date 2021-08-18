@@ -9,112 +9,140 @@ namespace Mallenom.ImageProcessing
 {
     public partial class Form1 : Form
     {
-        Bitmap newBitmap;
-        float contrast = 0;
-
+        private Bitmap _newBitmap;
+        private float _contrast = 0;
+        private static object _locker = new object();
+        
         public Form1()
         {
             InitializeComponent();
-
-            trackBarContast.Enabled = saveAsToolStripMenuItem.Enabled = false;
+            trackBarContrast.Enabled = _miSaveAsMenuItem.Enabled = processedImage.Visible = false;
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenMenuItemClick(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            if(_newBitmap != null) _newBitmap.Dispose();
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                menuStrip1.Enabled = false;
+                _mnuMenuStrip.Enabled = processedImage.Visible = false;
+                newImage.Image = processedImage.Image = null;
 
-                pictureBox1.Image = null;
-                pictureBox1.Image =  newBitmap  =  new Bitmap(openFileDialog1.FileName);
+                newImage.Image = _newBitmap = new Bitmap(openFileDialog.FileName);
 
-                menuStrip1.Enabled = saveAsToolStripMenuItem.Enabled = true;
+                _mnuMenuStrip.Enabled = _miSaveAsMenuItem.Enabled = newImage.Visible = true;
             }
         }
 
-        private void contrastToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ContrastMenuItemClick(object sender, EventArgs e)
         {
-            if (pictureBox1.Image == null) return;
+            if (newImage.Image == null) return;
 
-            trackBarContast.Enabled = true;
+            newImage.Visible = false;
+            trackBarContrast.Enabled = processedImage.Visible = true;
         }
 
-        private async void gradientToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void GradientMenuItemClick(object sender, EventArgs e)
         {
-            if (pictureBox1.Image == null) return;
+            if (newImage.Image == null) return;
 
-            trackBarContast.Enabled = false;
+            processedImage.Visible = true;
+            trackBarContrast.Enabled = newImage.Visible = false;
 
-            await Task.Run(() => { GradientProccessing(newBitmap); });
+            await Task.Run(() => { GradientProccessing(_newBitmap); });
         }
 
         /// <summary>Изменяет контраст.</summary>
-        private void ContrastProcessing(Bitmap newBitmap)
-        {
-            Invoke(new Action(() =>
-            {
-                contrast = 0.04f * trackBarContast.Value;
-
-                Bitmap bm = new Bitmap(newBitmap.Width, newBitmap.Height);
-                Graphics g = Graphics.FromImage(bm);
-                ImageAttributes ia = new ImageAttributes();
-
-                ColorMatrix cm = new ColorMatrix(new float[][]{
-                                        new float[] { contrast, 0f, 0f, 0f, 0f },
-                                        new float[] { 0f, contrast, 0f, 0f, 0f },
-                                        new float[] { 0f, 0f, contrast, 0f, 0f },
+        Task ContrastProccessing(Bitmap newBitmap)
+        {  
+            var task = new Task(() =>
+            { 
+                lock (_locker)
+                {
+                    Bitmap bitmap = new Bitmap(newBitmap.Width, newBitmap.Height);
+                    Graphics graphics = Graphics.FromImage(newBitmap);
+                    ImageAttributes imageAttributes = new ImageAttributes();
+                    ColorMatrix colorMatrix = new ColorMatrix(new float[][]{
+                                        new float[] { _contrast, 0f, 0f, 0f, 0f },
+                                        new float[] { 0f, _contrast, 0f, 0f, 0f },
+                                        new float[] { 0f, 0f, _contrast, 0f, 0f },
                                         new float[] { 0f,0f, 0f, 1f, 0f },
                                         new float[] { 0.001f, 0.001f, 0.001f, 0f, 1f } });
 
-                ia.SetColorMatrix(cm);
 
-                g.DrawImage(newBitmap, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), 0, 0, newBitmap.Width, newBitmap.Height, GraphicsUnit.Pixel, ia);
+                    imageAttributes.SetColorMatrix(colorMatrix);
 
-                g.Dispose();
-                ia.Dispose();
+                    graphics.DrawImage(
+                        newBitmap,
+                        new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
+                        0,
+                        0,
+                        newBitmap.Width,
+                        newBitmap.Height,
+                        GraphicsUnit.Pixel,
+                        imageAttributes);
 
-                pictureBox1.Image = bm;
-        }));
+                    processedImage.Image = newBitmap;
 
+                    graphics.Dispose();
+                    imageAttributes.Dispose();
+                }
+            });
+            task.Start();
+            return task;
         }
+
         /// <summary>Накладывает градиент.</summary>
-        private void GradientProccessing(Bitmap newBitmap)
+        Task GradientProccessing(Bitmap newBitmap)
         {
-            if (newBitmap == null & pictureBox1.Image == null) return;
+            var task = new Task(() =>
+            {
+                lock (_locker)
+                {
+                    Bitmap bitmap = new Bitmap(newBitmap.Width, newBitmap.Height);
+                    Graphics graphics = Graphics.FromImage(bitmap);
 
-            Bitmap bm = new Bitmap(newBitmap.Width, newBitmap.Height);
-            Graphics g = Graphics.FromImage(bm);
+                    graphics.DrawImage(
+                        newImage.Image,
+                        new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
+                        0,
+                        0,
+                        newBitmap.Width,
+                        newBitmap.Height,
+                        GraphicsUnit.Pixel);
 
-            g.DrawImage(pictureBox1.Image, new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), 0, 0, newBitmap.Width, newBitmap.Height, GraphicsUnit.Pixel);
 
+                    LinearGradientBrush brush = new LinearGradientBrush(
+                        new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
+                        Color.FromArgb(128, Color.Black),
+                        Color.FromArgb(128, Color.White),
+                        LinearGradientMode.ForwardDiagonal);
 
-            LinearGradientBrush brush = new LinearGradientBrush(
-                new Rectangle(0, 0, newBitmap.Width, newBitmap.Height),
-                Color.FromArgb(128, Color.Black),
-                Color.FromArgb(128, Color.White),
-                LinearGradientMode.ForwardDiagonal);
+                    graphics.FillRectangle(brush, 0, 0, newImage.Image.Width, newImage.Image.Height);
 
-            g.FillRectangle(brush, 0, 0, pictureBox1.Image.Width, pictureBox1.Image.Height);
+                    processedImage.Image = bitmap;
 
-            pictureBox1.Image = bm;
-
-            brush.Dispose();
+                    brush.Dispose();
+                    graphics.Dispose(); 
+                }
+            });
+            task.Start();
+            return task;
         }
 
-  
-
-        private async void trackBarContast_Scroll(object sender, EventArgs e)
+        private async void TrackBarContrastScroll(object sender, EventArgs e)
         {
-            if (newBitmap == null) return;
+            if (_newBitmap == null) return;
 
-            await Task.Run(() => { ContrastProcessing(newBitmap); });
+            _contrast = 0.04f * trackBarContrast.Value;
+            await ContrastProccessing(_newBitmap);
         }
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveAsMenuItemClick(object sender, EventArgs e)
         {
-            if (saveFileDialog1.ShowDialog() == DialogResult.Cancel) return;
-            
-            pictureBox1.Image.Save(saveFileDialog1.FileName);
+            if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
+
+            processedImage.Image.Save(saveFileDialog.FileName);
         }
     }
 }
