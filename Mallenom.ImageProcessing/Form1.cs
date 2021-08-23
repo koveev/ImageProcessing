@@ -9,6 +9,7 @@ namespace Mallenom.ImageProcessing
 {
     public partial class Form1 : Form
     {
+        private Bitmap _oldBitmap;
         private Bitmap _newBitmap;
         private float _contrast = 0;
         private static object _locker = new object();
@@ -21,14 +22,14 @@ namespace Mallenom.ImageProcessing
 
         private void OpenMenuItemClick(object sender, EventArgs e)
         {
-            if(_newBitmap != null) _newBitmap.Dispose();
+            if(_oldBitmap != null) _oldBitmap.Dispose();
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 _mnuMenuStrip.Enabled = processedImage.Visible = false;
                 newImage.Image = processedImage.Image = null;
 
-                newImage.Image = _newBitmap = new Bitmap(openFileDialog.FileName);
+                newImage.Image = _oldBitmap = new Bitmap(openFileDialog.FileName);
 
                 _mnuMenuStrip.Enabled = _miSaveAsMenuItem.Enabled = newImage.Visible = true;
             }
@@ -49,18 +50,18 @@ namespace Mallenom.ImageProcessing
             processedImage.Visible = true;
             trackBarContrast.Enabled = newImage.Visible = false;
 
-            await Task.Run(() => { GradientProccessing(_newBitmap); });
+            await GradientProccessing(_oldBitmap);
         }
 
         /// <summary>Изменяет контраст.</summary>
-        Task ContrastProccessing(Bitmap newBitmap)
+        async Task ContrastProccessing(Bitmap newBitmap)
         {  
-            var task = new Task(() =>
+            await Task.Run(() =>
             { 
                 lock (_locker)
                 {
-                    Bitmap bitmap = new Bitmap(newBitmap.Width, newBitmap.Height);
-                    Graphics graphics = Graphics.FromImage(bitmap);
+                    _newBitmap = new Bitmap(newBitmap.Width, newBitmap.Height);
+                    Graphics graphics = Graphics.FromImage(_newBitmap);
                     ImageAttributes imageAttributes = new ImageAttributes();
                     ColorMatrix colorMatrix = new ColorMatrix(new float[][]{
                                         new float[] { _contrast, 0f, 0f, 0f, 0f },
@@ -82,25 +83,29 @@ namespace Mallenom.ImageProcessing
                         GraphicsUnit.Pixel,
                         imageAttributes);
 
-                    processedImage.Image = bitmap;
+                    Image img = processedImage.Image;
+                    processedImage.Image = _newBitmap;
 
+					if(img != null)
+					{
+                        img.Dispose();
+					}
+					
                     graphics.Dispose();
                     imageAttributes.Dispose();
                 }
             });
-            task.Start();
-            return task;
         }
 
         /// <summary>Накладывает градиент.</summary>
-        Task GradientProccessing(Bitmap newBitmap)
+        async Task GradientProccessing(Bitmap newBitmap)
         {
-            var task = new Task(() =>
+            await Task.Run(() =>
             {
                 lock (_locker)
                 {
-                    Bitmap bitmap = new Bitmap(newBitmap.Width, newBitmap.Height);
-                    Graphics graphics = Graphics.FromImage(bitmap);
+                    _newBitmap = new Bitmap(newBitmap.Width, newBitmap.Height);
+                    Graphics graphics = Graphics.FromImage(_newBitmap);
 
                     graphics.DrawImage(
                         newImage.Image,
@@ -120,22 +125,20 @@ namespace Mallenom.ImageProcessing
 
                     graphics.FillRectangle(brush, 0, 0, newImage.Image.Width, newImage.Image.Height);
 
-                    processedImage.Image = bitmap;
+                    processedImage.Image = _newBitmap;
 
                     brush.Dispose();
                     graphics.Dispose(); 
                 }
             });
-            task.Start();
-            return task;
         }
 
         private async void TrackBarContrastScroll(object sender, EventArgs e)
         {
-            if (_newBitmap == null) return;
+            if (_oldBitmap == null) return;
 
             _contrast = 0.04f * trackBarContrast.Value;
-            await ContrastProccessing(_newBitmap);
+            await ContrastProccessing(_oldBitmap);
         }
 
         private void SaveAsMenuItemClick(object sender, EventArgs e)
