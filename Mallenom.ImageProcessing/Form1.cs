@@ -8,6 +8,7 @@ namespace Mallenom.ImageProcessing
     {
         private static Bitmap _newBitmap;
 		private static float _contrast = 0;
+        private static float tContrast = 0;
 
         public Form1()
         {
@@ -51,18 +52,14 @@ namespace Mallenom.ImageProcessing
             if (img != null) img.Dispose();
         }
 		
-        private async void TrackBarContrastMouseUp(object sender, MouseEventArgs e)
-        {
-            processedImage.Image = await ImageProccessingAsync.ContrastProccessing(_newBitmap, _contrast);
-        }
-
         private async void TrackBarContrastScroll(object sender, EventArgs e)
         {
             if (_newBitmap == null || ImageProccessingAsync._taskStatusRunning == true) return;
 
             _contrast = 0.04f * trackBarContrast.Value;
+            tContrast = (1.0f - _contrast) / 2.0f;
             Image img = processedImage.Image;
-            processedImage.Image = await ImageProccessingAsync.ContrastProccessing(_newBitmap, _contrast);
+            processedImage.Image = await ImageProccessingAsync.ContrastProccessing(_newBitmap, _contrast, tContrast);
             
             if (img != null) img.Dispose();
         }
@@ -72,6 +69,11 @@ namespace Mallenom.ImageProcessing
             if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
 
             processedImage.Image.Save(saveFileDialog.FileName);
+        }
+
+		private async void TrackBarContrastMouseCaptureChanged(object sender, EventArgs e)
+		{
+            processedImage.Image = await ImageProccessingAsync.ContrastProccessing(_newBitmap, _contrast, tContrast);
         }
 	}   
 }

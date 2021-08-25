@@ -188,7 +188,7 @@ namespace Mallenom.ImageProcessing
 			this.trackBarContrast.TabIndex = 1;
 			this.trackBarContrast.TickFrequency = 5;
 			this.trackBarContrast.Scroll += new System.EventHandler(this.TrackBarContrastScroll);
-			this.trackBarContrast.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TrackBarContrastMouseUp);
+			this.trackBarContrast.MouseCaptureChanged += new System.EventHandler(this.TrackBarContrastMouseCaptureChanged);
 			// 
 			// openFileDialog
 			// 

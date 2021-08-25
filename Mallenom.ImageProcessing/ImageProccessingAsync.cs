@@ -51,7 +51,7 @@ namespace Mallenom.ImageProcessing
         }
 
         // <summary>Изменяет контраст.</summary>
-        public static async Task<Bitmap> ContrastProccessing(Bitmap sourceBitmap, float contrast)
+        public static async Task<Bitmap> ContrastProccessing(Bitmap sourceBitmap, float contrast, float tContrast)
         {
             _taskStatusRunning = true;
             var task = await Task.Run(() =>
@@ -66,7 +66,7 @@ namespace Mallenom.ImageProcessing
                                            new float[] { 0f, contrast, 0f, 0f, 0f },
                                            new float[] { 0f, 0f, contrast, 0f, 0f },
                                            new float[] { 0f,0f, 0f, 1f, 0f },
-                                           new float[] { 0.001f, 0.001f, 0.001f, 0f, 1f } });
+                                           new float[] { tContrast, tContrast, tContrast, 0f, 1f } });
 
                     imageAttributes.SetColorMatrix(colorMatrix);
 
